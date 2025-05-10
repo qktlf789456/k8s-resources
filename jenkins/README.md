@@ -23,7 +23,7 @@
 ```
 
 **참고:** 스크립트 실행 전 `volume.yaml` 파일에서 다음 두 항목을 확인하세요:
-- `- K8S_NODE_NAME_TO_BE_REPLACED` - Kubernetes 노드 이름으로 대체.
+- `K8S_NODE_NAME_TO_BE_REPLACED` - Kubernetes 노드 이름으로 대체.
   -  PersistentVolume이 특정 노드에 바인딩되는 것을 의미. 
   - **중요**: 이 노드가 클러스터에서 제거되거나 교체될 경우 볼륨 데이터가 완전히 손실될 수 있음에 유의
 
