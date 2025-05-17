@@ -39,12 +39,11 @@ use `apply-to-k8s.sh` to deploy.
 
 - Jenkins는 NodePort 서비스를 통해 노출된다. (기본 포트: 32000)
 - 접근 URL: http://localhost:32000
-- 초기 관리자 비밀번호는 다음 위치에서 확인할 수 있습니다:
+- 초기 관리자 비밀번호는 다음 위치에서 확인할 수 있음.
   - `~/jenkins-data/secrets/initialAdminPassword`
+  - `apply-to-k8s.sh` 를 사용하는 경우 구성 완료 시 초기 패스워드를 확인할 수 있음.
 
-## 정리
-
-모든 Jenkins 리소스를 제거하려면:
+## k8s 리소스 정리
 
 ```bash
 kubectl delete deployment jenkins -n devops-tools
