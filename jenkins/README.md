@@ -49,6 +49,6 @@ use `apply-to-k8s.sh` to deploy.
 kubectl delete deployment jenkins -n devops-tools
 kubectl delete service jenkins-service -n devops-tools
 kubectl delete pvc jenkins-pv-claim -n devops-tools
-kubectl delete pv jenkins-pv-volume
+kubectl delete pv jenkins-pv-hostpath
 kubectl delete storageclass local-storage
 ```

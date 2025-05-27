@@ -55,9 +55,6 @@ else
   echo "Volume directory already exists."
 fi
 
-# Update volume.yaml with the correct path
-echo "Updating volume path in yaml..."
-sed -i.bak "s|path: .*|path: $JENKINS_DATA_DIR|g" volume.yaml
 
 # Create namespace (only if it doesn't exist)
 echo "Checking and creating namespace..."

@@ -3,34 +3,24 @@ apiVersion: storage.k8s.io/v1
 metadata:
   name: local-storage
 provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
 
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: jenkins-pv-volume
+  name: jenkins-pv-hostpath
   labels:
     type: local
 spec:
   storageClassName: local-storage
-  claimRef:
-    name: jenkins-pv-claim
-    namespace: devops-tools
   capacity:
     storage: 10Gi
   accessModes:
     - ReadWriteOnce
-  local:
+  hostPath:
     path: /PATH/TO/BE/REPLACED/BY/SCRIPT  # will be dynamically set by apply-to-k8s.sh
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - K8S_NODE_NAME_TO_BE_REPLACED  # should be replaced manually.
+    type: DirectoryOrCreate
 
 ---
 apiVersion: v1
