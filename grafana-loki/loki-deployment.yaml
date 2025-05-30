@@ -21,18 +21,3 @@ spec:
           name: http
         args:
         - -config.file=/etc/loki/local-config.yaml
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: loki
-  namespace: monitoring
-spec:
-  selector:
-    app: loki
-  ports:
-  - port: 3100
-    targetPort: 3100
-    protocol: TCP
-    name: http
-  type: ClusterIP

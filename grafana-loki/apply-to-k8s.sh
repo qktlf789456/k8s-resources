@@ -13,9 +13,11 @@ kubectl apply -f grafana-configmap.yaml
 
 # Apply Loki deployment and service
 kubectl apply -f loki-deployment.yaml
+kubectl apply -f loki-service.yaml
 
 # Apply Grafana deployment and service
 kubectl apply -f grafana-deployment.yaml
+kubectl apply -f grafana-service.yaml
 
 echo "All resources have been applied successfully!"
 echo ""
