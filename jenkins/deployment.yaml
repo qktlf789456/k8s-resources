@@ -1,3 +1,5 @@
+# Jenkins Deployment 설정
+# Jenkins 서버의 배포 구성을 정의함
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,12 +15,14 @@ spec:
       labels:
         app: jenkins-server
     spec:
+      # Jenkins 프로세스의 보안 컨텍스트 설정
+      # fsGroup과 runAsUser를 1000으로 설정하여 Jenkins 사용자 권한으로 실행함
       securityContext:
             fsGroup: 1000 
             runAsUser: 1000
       containers:
         - name: jenkins
-          image: jenkins/jenkins:lts-jdk17
+          image: jenkins/jenkins:lts-jdk17  # Jenkins LTS 버전 (JDK 17 포함)
           resources:
             limits:
               memory: "4Gi"
@@ -28,9 +32,10 @@ spec:
               cpu: "500m"
           ports:
             - name: httpport
-              containerPort: 8080
+              containerPort: 8080      # 웹 UI 접속 포트
             - name: jnlpport
-              containerPort: 50000
+              containerPort: 50000     # Jenkins 에이전트 연결 포트
+          # 컨테이너 상태 확인용 Liveness Probe
           livenessProbe:
             httpGet:
               path: "/login"
@@ -39,6 +44,7 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 5
+          # 트래픽 수신 준비 상태 확인용 Readiness Probe
           readinessProbe:
             httpGet:
               path: "/login"
@@ -47,10 +53,11 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
+          # Jenkins 데이터 저장용 볼륨 마운트
           volumeMounts:
             - name: jenkins-data
-              mountPath: /var/jenkins_home         
+              mountPath: /var/jenkins_home  # Jenkins 홈 디렉토리
       volumes:
         - name: jenkins-data
           persistentVolumeClaim:
-              claimName: jenkins-pv-claim
+              claimName: jenkins-pv-claim   # volume.yaml에서 정의한 PVC

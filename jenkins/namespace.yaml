@@ -1,3 +1,4 @@
+# devops-tools 네임스페이스에 Jenkins와 관련 리소스를 배포함
 apiVersion: v1
 kind: Namespace
 metadata:

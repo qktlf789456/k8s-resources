@@ -6,6 +6,7 @@ provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: Immediate
 
 ---
+# Jenkins용 PersistentVolume
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -15,14 +16,15 @@ metadata:
 spec:
   storageClassName: local-storage
   capacity:
-    storage: 10Gi
+    storage: 30Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /PATH/TO/BE/REPLACED/BY/SCRIPT  # will be dynamically set by apply-to-k8s.sh
+    path: /PATH/TO/BE/REPLACED/BY/SCRIPT  # apply-to-k8s.sh 스크립트가 동적으로 설정함
     type: DirectoryOrCreate
 
 ---
+# Jenkins용 PersistentVolumeClaim
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -34,4 +36,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 3Gi
+      storage: 30Gi
