@@ -53,24 +53,12 @@ kubectl apply -f grafana-service.yaml
 
 ## 접속 방법
 
-### 1. NodePort로 직접 접속
 ```bash
 # Grafana 대시보드
 http://localhost:32101
 
 # Loki API (외부 애플리케이션용)
-http://localhost:32102
-```
-
-### 2. Port Forward 사용
-```bash
-# Grafana
-kubectl port-forward -n monitoring svc/grafana 3000:3000
-# http://localhost:3000 접속
-
-# Loki (API 확인용)
-kubectl port-forward -n monitoring svc/loki 3100:3100
-# http://localhost:3100/ready 확인
+http://localhost:32102/loki/api/v1/push
 ```
 
 ## 확인 명령어
