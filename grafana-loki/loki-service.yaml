@@ -9,6 +9,7 @@ spec:
   ports:
   - port: 3100
     targetPort: 3100
+    nodePort: 32102
     protocol: TCP
     name: http
-  type: ClusterIP
+  type: NodePort

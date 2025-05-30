@@ -16,7 +16,7 @@ Grafana Loki는 로그 집계 시스템으로, Prometheus에서 영감을 받아
 
 ### 2. Loki
 - `loki-deployment.yaml`: Loki 서버 배포 (1개 레플리카)
-- `loki-service.yaml`: Loki 내부 서비스 (ClusterIP, 포트: 3100)
+- `loki-service.yaml`: Loki 서비스 (NodePort, 내부: 3100, 외부: 32102)
 
 ### 3. Grafana
 - `grafana-deployment.yaml`: Grafana 대시보드 배포 (1개 레플리카)
@@ -57,6 +57,9 @@ kubectl apply -f grafana-service.yaml
 ```bash
 # Grafana 대시보드
 http://localhost:32101
+
+# Loki API (외부 애플리케이션용)
+http://localhost:32102
 ```
 
 ### 2. Port Forward 사용
@@ -108,6 +111,27 @@ kubectl logs -n monitoring deployment/grafana
 ### Loki
 - 기본 로컬 설정 사용 (-config.file=/etc/loki/local-config.yaml)
 - 단일 인스턴스 모드
+
+## 외부 애플리케이션에서 Loki 접근
+
+Spring Boot 등 외부 애플리케이션에서 Loki로 로그를 전송해야 하는 경우:
+
+### 1. NodePort 사용 (외부 애플리케이션)
+```xml
+<!-- logback.xml 설정 -->
+<url>http://localhost:32102/loki/api/v1/push</url>
+```
+
+### 2. Kubernetes 내부 애플리케이션
+```xml
+<!-- 같은 네임스페이스 -->
+<url>http://loki:3100/loki/api/v1/push</url>
+
+<!-- 다른 네임스페이스 -->
+<url>http://loki.monitoring:3100/loki/api/v1/push</url>
+```
+
+**참고**: Grafana는 내부적으로 ClusterIP 서비스(`loki:3100`)를 통해 Loki에 접근합니다.
 
 ## 참고 사항
 
