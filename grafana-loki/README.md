@@ -4,7 +4,7 @@
 
 ## 개요
 
-Grafana Loki는 로그 집계 시스템으로, Prometheus에서 영감을 받아 만들어졌습니다. 이 구성은 다음을 포함합니다:
+Grafana & Loki 구성으로 로그 집계 시스템을 구성합니다.
 
 - **Loki**: 로그 수집 및 저장 서버
 - **Grafana**: 로그 시각화 및 쿼리를 위한 대시보드
@@ -102,24 +102,10 @@ kubectl logs -n monitoring deployment/grafana
 
 ## 외부 애플리케이션에서 Loki 접근
 
-Spring Boot 등 외부 애플리케이션에서 Loki로 로그를 전송해야 하는 경우:
+Kubernetes 외부에서 Loki로 로그를 전송하려면 NodePort를 통해 접근:
 
-### 1. NodePort 사용 (외부 애플리케이션)
-```xml
-<!-- logback.xml 설정 -->
-<url>http://localhost:32102/loki/api/v1/push</url>
-```
-
-### 2. Kubernetes 내부 애플리케이션
-```xml
-<!-- 같은 네임스페이스 -->
-<url>http://loki:3100/loki/api/v1/push</url>
-
-<!-- 다른 네임스페이스 -->
-<url>http://loki.monitoring:3100/loki/api/v1/push</url>
-```
-
-**참고**: Grafana는 내부적으로 ClusterIP 서비스(`loki:3100`)를 통해 Loki에 접근합니다.
+- **Loki Push API**: `http://localhost:32102/loki/api/v1/push`
+- **Health Check**: `http://localhost:32102/ready`
 
 ## 참고 사항
 
