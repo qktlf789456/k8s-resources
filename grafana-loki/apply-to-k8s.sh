@@ -25,6 +25,11 @@ echo "Data directories created:"
 echo "  Loki: $LOKI_DATA_PATH"
 echo "  Grafana: $GRAFANA_DATA_PATH"
 
+# Set appropriate permissions for Grafana and Loki
+echo "Setting directory permissions..."
+chmod -R 755 "$LOKI_DATA_PATH" "$GRAFANA_DATA_PATH"
+echo "Permissions set successfully"
+
 # Apply namespace first
 kubectl apply -f namespace.yaml
 
