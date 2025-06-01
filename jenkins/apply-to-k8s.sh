@@ -1,64 +1,35 @@
 #!/bin/bash
 set -e
 
-# First assign the config name from parameter
-K8S_CONFIG_NAME="$1"
-USERNAME="$2"
-
 # Navigate to the script directory
 cd "$(dirname "$0")"
 
-# Check if K8s config name is provided
-if [ -z "$K8S_CONFIG_NAME" ]; then
-  echo "Error: Kubernetes config name is required as first parameter"
-  echo "Usage: $0 <kubernetes-config-name> [username]"
-  exit 1
+# Check if node name is provided
+if [ -z "$1" ]; then
+    echo "Error: Node name is required!"
+    echo "Usage: $0 <node-name>"
+    echo "Example: $0 docker-desktop"
+    exit 1
 fi
 
-# If username is not provided, get it automatically
-if [ -z "$USERNAME" ]; then
-  USERNAME=$(whoami)
-  echo "Using detected username: $USERNAME"
-fi
+NODE_NAME=$1
 
-echo "=== Jenkins Kubernetes Deployment Script (Config: $K8S_CONFIG_NAME, User: $USERNAME) ==="
+echo "=== Jenkins Kubernetes Deployment Script ==="
 
-# Check if the specified context exists
-if ! kubectl config get-contexts "$K8S_CONFIG_NAME" &> /dev/null; then
-  echo "Error: Kubernetes config '$K8S_CONFIG_NAME' not found"
-  echo "Available configs:"
-  kubectl config get-contexts
-  exit 1
-fi
+# Create data directory in home directory
+JENKINS_HOME="$HOME/.jenkins"
+JENKINS_DATA_PATH="$JENKINS_HOME/data"
 
-# Set the Kubernetes context to the specified config
-echo "Setting Kubernetes context to: $K8S_CONFIG_NAME"
-kubectl config use-context "$K8S_CONFIG_NAME"
+echo "Creating data directory..."
+mkdir -p "$JENKINS_DATA_PATH"
 
-# Determine OS type and set paths accordingly
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # macOS path
-  JENKINS_DATA_DIR="/Users/$USERNAME/jenkins-data"
-else
-  # Linux path (default)
-  JENKINS_DATA_DIR="/home/$USERNAME/jenkins-data"
-fi
+echo "Data directory created:"
+echo "  Jenkins: $JENKINS_DATA_PATH"
 
-echo "Using volume directory: $JENKINS_DATA_DIR"
-
-# Create the directory if it doesn't exist
-if [ ! -d "$JENKINS_DATA_DIR" ]; then
-  mkdir -p "$JENKINS_DATA_DIR"
-  chmod 755 "$JENKINS_DATA_DIR"
-  echo "Created volume directory"
-else
-  echo "Volume directory already exists."
-fi
-
-
-# Update volume.yaml with the correct path
-echo "Updating volume path in yaml..."
-sed -i.bak "s|path: .*|path: $JENKINS_DATA_DIR|g" volume.yaml
+# Set appropriate permissions
+echo "Setting directory permissions..."
+chmod -R 755 "$JENKINS_DATA_PATH"
+echo "Permissions set successfully"
 
 
 # Create namespace (only if it doesn't exist)
@@ -70,9 +41,11 @@ else
   echo "devops-tools namespace already exists."
 fi
 
-# Create/update storage class and volume
-echo "Applying storage class and volume..."
-kubectl apply -f volume.yaml
+# Apply volume with path substitution
+echo "Applying volume with dynamic path..."
+cat volume.yaml | \
+  sed "s|\${JENKINS_DATA_PATH}|$JENKINS_DATA_PATH|g" | \
+  kubectl apply -f -
 echo "Volume configuration completed"
 
 # Apply deployment
@@ -111,12 +84,12 @@ echo "Checking for password in container..."
 kubectl exec -n devops-tools $JENKINS_POD -- cat /var/jenkins_home/secrets/initialAdminPassword 2>/dev/null || echo "Password not available yet in container"
 
 echo "Checking for password in volume directory..."
-if [ -f "$JENKINS_DATA_DIR/secrets/initialAdminPassword" ]; then
+if [ -f "$JENKINS_DATA_PATH/secrets/initialAdminPassword" ]; then
   echo "Password from volume directory:"
-  cat "$JENKINS_DATA_DIR/secrets/initialAdminPassword"
+  cat "$JENKINS_DATA_PATH/secrets/initialAdminPassword"
 else
   echo "Password file not found in volume directory yet"
-  echo "You can check it later with: cat $JENKINS_DATA_DIR/secrets/initialAdminPassword"
+  echo "You can check it later with: cat $JENKINS_DATA_PATH/secrets/initialAdminPassword"
 fi
 
 echo "=== Deployment Complete ==="

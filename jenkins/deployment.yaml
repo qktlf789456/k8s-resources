@@ -60,4 +60,4 @@ spec:
       volumes:
         - name: jenkins-data
           persistentVolumeClaim:
-              claimName: jenkins-pv-claim   # volume.yaml에서 정의한 PVC
+              claimName: jenkins-pvc   # volume.yaml에서 정의한 PVC
