@@ -23,21 +23,35 @@ Grafana & Loki 구성으로 로그 집계 시스템을 구성합니다.
 - `grafana-service.yaml`: Grafana 외부 접근용 서비스 (NodePort, 포트: 32101)
 - `grafana-configmap.yaml`: Loki 데이터소스 자동 설정
 
-### 4. 스크립트
-- `apply-to-k8s.sh`: 모든 리소스를 순서대로 배포
+### 4. Volume
+- `volume.yaml`: Loki와 Grafana의 데이터를 저장할 PersistentVolume/PVC 정의
+
+### 5. 스크립트
+- `apply-to-k8s.sh`: 모든 리소스를 순서대로 배포 (노드명 필수)
 - `cleanup.sh`: 모든 리소스 제거
 
 ## 배포 방법
 
 ### 1. 전체 배포
 ```bash
-./apply-to-k8s.sh
+# 노드명 필수 (예: docker-desktop)
+./apply-to-k8s.sh <node-name>
+
+# 예시
+./apply-to-k8s.sh docker-desktop
 ```
+
+**참고**: 
+- 데이터는 `~/.grafana-loki` 디렉토리에 저장됩니다
+- 스크립트가 자동으로 데이터 디렉토리를 생성합니다
 
 ### 2. 개별 배포
 ```bash
 # Namespace 생성
 kubectl apply -f namespace.yaml
+
+# Volume 생성 (경로 치환 필요)
+kubectl apply -f volume.yaml
 
 # ConfigMap 생성
 kubectl apply -f grafana-configmap.yaml
@@ -87,6 +101,11 @@ kubectl logs -n monitoring deployment/grafana
 모든 리소스를 제거하려면:
 ```bash
 ./cleanup.sh
+```
+
+데이터 디렉토리를 완전히 삭제하려면:
+```bash
+rm -rf ~/.grafana-loki
 ```
 
 ## 주요 설정
