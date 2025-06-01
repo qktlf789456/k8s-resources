@@ -21,3 +21,10 @@ spec:
           name: http
         args:
         - -config.file=/etc/loki/local-config.yaml
+        volumeMounts:
+        - name: loki-storage
+          mountPath: /loki
+      volumes:
+      - name: loki-storage
+        persistentVolumeClaim:
+          claimName: loki-pvc

@@ -2,11 +2,35 @@
 
 echo "Applying Grafana-Loki resources to Kubernetes..."
 
+# Set default node name (can be overridden as argument)
+NODE_NAME=${1:-docker-desktop}
+
+# Create data directories in home directory
+GRAFANA_LOKI_HOME="$HOME/.grafana-loki"
+LOKI_DATA_PATH="$GRAFANA_LOKI_HOME/loki-data"
+GRAFANA_DATA_PATH="$GRAFANA_LOKI_HOME/grafana-data"
+
+echo "Creating data directories..."
+mkdir -p "$LOKI_DATA_PATH"
+mkdir -p "$GRAFANA_DATA_PATH"
+
+echo "Data directories created:"
+echo "  Loki: $LOKI_DATA_PATH"
+echo "  Grafana: $GRAFANA_DATA_PATH"
+
 # Apply namespace first
 kubectl apply -f namespace.yaml
 
 # Wait for namespace to be created
 sleep 2
+
+# Apply Volumes with path substitution
+echo "Applying volumes with dynamic paths..."
+cat volume.yaml | \
+  sed "s|\${LOKI_DATA_PATH}|$LOKI_DATA_PATH|g" | \
+  sed "s|\${GRAFANA_DATA_PATH}|$GRAFANA_DATA_PATH|g" | \
+  sed "s|\${NODE_NAME}|$NODE_NAME|g" | \
+  kubectl apply -f -
 
 # Apply ConfigMap
 kubectl apply -f grafana-configmap.yaml

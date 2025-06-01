@@ -1,0 +1,70 @@
+# Loki 데이터 저장용 PersistentVolume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: loki-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain # 데이터 유지를 위한 설정: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain
+  local:
+    path: ${LOKI_DATA_PATH}  # apply-to-k8s.sh에서 치환됨
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - ${NODE_NAME}  # apply-to-k8s.sh에서 치환됨
+
+---
+# Loki용 PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: loki-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# Grafana 데이터 저장용 PersistentVolume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: grafana-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: ${GRAFANA_DATA_PATH}  # apply-to-k8s.sh에서 치환됨
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - ${NODE_NAME}  # apply-to-k8s.sh에서 치환됨
+---
+# Grafana용 PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

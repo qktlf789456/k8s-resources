@@ -23,9 +23,16 @@ kubectl wait --for=delete pod -l app=loki -n monitoring --timeout=60s 2>/dev/nul
 echo "Deleting namespace..."
 kubectl delete -f namespace.yaml --ignore-not-found=true
 
+# Delete PersistentVolumes (these are not namespaced)
+echo "Deleting PersistentVolumes..."
+kubectl delete pv loki-pv grafana-pv --ignore-not-found=true
+
 echo ""
 echo "Cleanup completed!"
 echo ""
 echo "To verify all resources are removed:"
 echo "  kubectl get all -n monitoring"
 echo "  kubectl get namespace monitoring"
+echo ""
+echo "To remove data directories (optional):"
+echo "  rm -rf ~/.grafana-loki"
