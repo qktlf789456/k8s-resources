@@ -2,8 +2,15 @@
 
 echo "Applying Grafana-Loki resources to Kubernetes..."
 
-# Set default node name (can be overridden as argument)
-NODE_NAME=${1:-docker-desktop}
+# Check if node name is provided
+if [ -z "$1" ]; then
+    echo "Error: Node name is required!"
+    echo "Usage: $0 <node-name>"
+    echo "Example: $0 docker-desktop"
+    exit 1
+fi
+
+NODE_NAME=$1
 
 # Create data directories in home directory
 GRAFANA_LOKI_HOME="$HOME/.grafana-loki"
