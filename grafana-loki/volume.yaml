@@ -9,16 +9,10 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain # 데이터 유지를 위한 설정: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain
-  local:
+  storageClassName: local-storage
+  hostPath:
     path: ${LOKI_DATA_PATH}  # apply-to-k8s.sh에서 치환됨
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - ${NODE_NAME}  # apply-to-k8s.sh에서 치환됨
+    type: DirectoryOrCreate
 
 ---
 # Loki용 PersistentVolumeClaim
@@ -28,6 +22,7 @@ metadata:
   name: loki-pvc
   namespace: monitoring
 spec:
+  storageClassName: local-storage
   accessModes:
     - ReadWriteOnce
   resources:
@@ -45,16 +40,10 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  local:
+  storageClassName: local-storage
+  hostPath:
     path: ${GRAFANA_DATA_PATH}  # apply-to-k8s.sh에서 치환됨
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - ${NODE_NAME}  # apply-to-k8s.sh에서 치환됨
+    type: DirectoryOrCreate
 ---
 # Grafana용 PersistentVolumeClaim
 apiVersion: v1
@@ -63,6 +52,7 @@ metadata:
   name: grafana-pvc
   namespace: monitoring
 spec:
+  storageClassName: local-storage
   accessModes:
     - ReadWriteOnce
   resources:
