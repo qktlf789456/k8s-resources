@@ -38,10 +38,12 @@ sleep 2
 
 # Apply Volumes with path substitution
 echo "Applying volumes with dynamic paths..."
-cat volume.yaml | \
+cat loki-volume.yaml | \
   sed "s|\${LOKI_DATA_PATH}|$LOKI_DATA_PATH|g" | \
+  kubectl apply -f -
+
+cat grafana-volume.yaml | \
   sed "s|\${GRAFANA_DATA_PATH}|$GRAFANA_DATA_PATH|g" | \
-  sed "s|\${NODE_NAME}|$NODE_NAME|g" | \
   kubectl apply -f -
 
 # Apply ConfigMap

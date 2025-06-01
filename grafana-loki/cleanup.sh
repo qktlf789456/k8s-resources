@@ -14,6 +14,11 @@ kubectl delete -f loki-deployment.yaml --ignore-not-found=true
 echo "Deleting ConfigMap..."
 kubectl delete -f grafana-configmap.yaml --ignore-not-found=true
 
+# Delete PersistentVolumeClaims
+echo "Deleting PersistentVolumeClaims..."
+kubectl delete -f loki-volume.yaml --ignore-not-found=true
+kubectl delete -f grafana-volume.yaml --ignore-not-found=true
+
 # Wait for resources to be deleted
 echo "Waiting for pods to terminate..."
 kubectl wait --for=delete pod -l app=grafana -n monitoring --timeout=60s 2>/dev/null || true

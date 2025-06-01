@@ -1,38 +1,5 @@
-# Loki 데이터 저장용 PersistentVolume
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: loki-pv
-spec:
-  capacity:
-    storage: 50Gi # 로그 데이터 저장을 위해 넉넉하게 설정
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain # 데이터 유지를 위한 설정: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain
-  storageClassName: ""
-  claimRef:
-    name: loki-pvc
-    namespace: monitoring
-  hostPath:
-    path: ${LOKI_DATA_PATH}  # apply-to-k8s.sh에서 치환됨
-    type: DirectoryOrCreate
-
----
-# Loki용 PersistentVolumeClaim
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: loki-pvc
-  namespace: monitoring
-spec:
-  storageClassName: ""
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 50Gi
----
 # Grafana 데이터 저장용 PersistentVolume
+# hostPath 는 권장하는 volume 이 아님에 유의, 필요 시 volume 만 변경하여 사용하길 권장함
 apiVersion: v1
 kind: PersistentVolume
 metadata:
