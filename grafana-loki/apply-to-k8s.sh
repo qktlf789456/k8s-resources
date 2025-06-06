@@ -46,8 +46,9 @@ cat grafana-volume.yaml | \
   sed "s|\${GRAFANA_DATA_PATH}|$GRAFANA_DATA_PATH|g" | \
   kubectl apply -f -
 
-# Apply ConfigMap
+# Apply ConfigMaps
 kubectl apply -f grafana-configmap.yaml
+kubectl apply -f loki-configmap.yaml
 
 # Apply Loki deployment and service
 kubectl apply -f loki-deployment.yaml

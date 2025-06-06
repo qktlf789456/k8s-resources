@@ -11,8 +11,9 @@ echo "Deleting Loki resources..."
 kubectl delete -f loki-service.yaml --ignore-not-found=true
 kubectl delete -f loki-deployment.yaml --ignore-not-found=true
 
-echo "Deleting ConfigMap..."
+echo "Deleting ConfigMaps..."
 kubectl delete -f grafana-configmap.yaml --ignore-not-found=true
+kubectl delete -f loki-configmap.yaml --ignore-not-found=true
 
 # Delete PersistentVolumeClaims
 echo "Deleting PersistentVolumeClaims..."

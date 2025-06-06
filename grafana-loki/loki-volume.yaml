@@ -6,7 +6,7 @@ metadata:
   name: loki-pv
 spec:
   capacity:
-    storage: 50Gi # 로그 데이터 저장을 위해 넉넉하게 설정
+    storage: 200Gi # 로그 데이터 저장을 위해 넉넉하게 설정
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain # 데이터 유지를 위한 설정: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain
@@ -31,4 +31,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 50Gi
+      storage: 200Gi
