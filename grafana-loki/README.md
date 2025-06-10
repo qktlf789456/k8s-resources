@@ -71,9 +71,15 @@ kubectl apply -f grafana-service.yaml
 # Grafana 대시보드
 http://localhost:32101
 
+# 초기 로그인 정보
+Username: admin
+Password: admin
+
 # Loki API (외부 애플리케이션용)
 http://localhost:32102/loki/api/v1/push
 ```
+
+**중요**: 첫 로그인 후 반드시 admin 비밀번호를 변경하세요!
 
 ## 확인 명령어
 
@@ -111,8 +117,9 @@ rm -rf ~/.grafana-loki
 ## 주요 설정
 
 ### Grafana
-- 익명 접근 활성화 (GF_AUTH_ANONYMOUS_ENABLED=true)
-- 익명 사용자 권한: Admin (GF_AUTH_ANONYMOUS_ORG_ROLE=Admin)
+- 익명 접근 비활성화 (인증 필요)
+- 기본 관리자 계정: admin / admin
+- 로그인 후 비밀번호 변경 권장
 - Loki 데이터소스 자동 구성
 
 ### Loki
@@ -130,4 +137,4 @@ Kubernetes 외부에서 Loki로 로그를 전송하려면 NodePort를 통해 접
 
 1. 이 구성은 개발/테스트 환경용입니다
 2. 프로덕션 환경에서는 적절한 인증, 영구 스토리지, 고가용성 설정이 필요합니다
-3. Grafana의 기본 admin 계정은 비활성화되어 있으며, 익명 접근만 가능합니다
+3. Grafana는 인증이 필요하며, 기본 계정(admin/admin)으로 로그인 후 비밀번호를 변경해야 합니다
