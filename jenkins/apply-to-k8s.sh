@@ -28,7 +28,7 @@ echo "  Jenkins: $JENKINS_DATA_PATH"
 
 # Set appropriate permissions
 echo "Setting directory permissions..."
-chmod -R 755 "$JENKINS_DATA_PATH"
+chmod -R 777 "$JENKINS_DATA_PATH"
 echo "Permissions set successfully"
 
 
