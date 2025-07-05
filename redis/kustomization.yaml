@@ -6,11 +6,3 @@ namespace: dev-tools
 resources:
   - redis-deployment.yaml
   - redis-service.yaml
-
-commonLabels:
-  app: redis
-  environment: development
-
-images:
-  - name: redis
-    newTag: 7-alpine
