@@ -4,5 +4,6 @@ kind: Kustomization
 namespace: dev-tools
 
 resources:
+  - redis-secret.yaml
   - redis-deployment.yaml
   - redis-service.yaml
