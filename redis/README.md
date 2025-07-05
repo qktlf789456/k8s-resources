@@ -4,8 +4,7 @@ This directory contains Kubernetes manifests for deploying Redis using Kustomiza
 
 ## Components
 
-- **kustomization.yaml**: Kustomization configuration
-- **namespace.yaml**: Creates a dedicated namespace for Redis
+- **kustomization.yaml**: Kustomization configuration (includes namespace management)
 - **redis-deployment.yaml**: Redis deployment with 1 replica (in-memory only)
 - **redis-service.yaml**: NodePort service for external access
 
@@ -47,7 +46,7 @@ kubectl apply -k .
 ### Service Configuration
 - Type: NodePort
 - Internal port: 6379
-- External port: 30379
+- External port: 32103
 
 ### Important Notes
 - No authentication configured (runs without password)
@@ -60,7 +59,7 @@ This is a minimal setup suitable for development/testing environments.
 
 ### From outside the cluster
 ```bash
-redis-cli -h <NODE_IP> -p 30379
+redis-cli -h <NODE_IP> -p 32103
 ```
 
 ### From within the cluster

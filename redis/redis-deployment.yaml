@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
-  namespace: redis-namespace
 spec:
   replicas: 1
   selector:
@@ -25,7 +24,7 @@ spec:
             cpu: "100m"
           limits:
             memory: "256Mi"
-            cpu: "500m"
+            cpu: "200m"
         livenessProbe:
           tcpSocket:
             port: 6379
