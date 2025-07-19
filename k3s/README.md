@@ -1,21 +1,20 @@
 # K3S with nginx-ingress
 
-## K3S Installation
+## Installation
 ```bash
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable traefik" sh -
 ```
 
-ref: "https://docs.k3s.io/quick-start"
+ref: https://docs.k3s.io/quick-start
 
+## nginx-ingress Setup
 
-## Setup nginx-ingress
-
-### 1. apply ingress-nginx manifests
+### 1. Apply ingress-nginx manifests
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/baremetal/deploy.yaml
 ```
 
-### 2. apply Service(LoadBalancer) for nginx-ingress
+### 2. Apply LoadBalancer Service
 ```yaml
 apiVersion: v1
 kind: Service
@@ -39,16 +38,16 @@ spec:
   type: LoadBalancer
 ```
 
-ref: "https://medium.com/@alesson.viana/installing-the-nginx-ingress-controller-on-k3s-df2c68cae3c8"
+ref: https://medium.com/@alesson.viana/installing-the-nginx-ingress-controller-on-k3s-df2c68cae3c8
 
-## Application Ingress Example
+## Ingress Example
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: example-ingress
 spec:
-  ingressClassName: "nginx" # Ensure add this line(default `nginx`), check `kubectl describe deployment {ingress-nginx-deployment} -n ingress-nginx` for supported ingress class
+  ingressClassName: nginx  # Must specify nginx (check: `kubectl describe deployment {ingress-nginx-deployment} -n ingress-nginx`)
   rules:
   - host: example.com
     http:
@@ -65,3 +64,4 @@ spec:
     - example.com
     secretName: tls-example-com
 ```
+
